@@ -1,0 +1,41 @@
+.enterGame {
+  width: 100%;
+  height: 40vh;
+  font-family: 'Major Mono Display', monospace;
+}
+
+.box {
+  color: white;
+  padding: 15px;
+  border: 1px solid white;
+  border-radius: 0.25rem;
+  height: 43vh;
+  overflow: auto;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.availableGame {
+  cursor: pointer;
+  user-select: none;
+}
+
+.selectedGame {
+  cursor: pointer;
+  user-select: none;
+  background: #444;
+}
+
+@media all and (max-width: 768px) {
+  .inactive {
+    display: none;
+  }
+
+  .box {
+    /* height: 53vh; */
+    margin-bottom: 100px;
+  }
+
+  .enterGame {
+    height: 200px;
+  }
+}
