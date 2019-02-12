@@ -12,7 +12,7 @@ import SettingsComponent from "../../views/Settings/Settings";
 // Returning false (or 0, etc) on beforeLeave will cancel the route
 // but any other value will be ignored and treated as true
 
-interface IRoute {
+export interface IRoute {
   component: any;
   beforeLeave?: () => boolean;
   beforeEnter?: () => string | boolean;
