@@ -1,8 +1,16 @@
-import React, { Component } from "react";
+import React, { Component, ChangeEvent } from "react";
 import { connect } from "react-redux";
 import { Container, Row, Col, Button, Input } from "reactstrap";
+import {IState} from "../../store/state";
+import { Dispatch } from "redux";
 
-class Settings extends Component {
+interface Props {
+  playerName: string;
+  onNameChange: (e:ChangeEvent<HTMLInputElement>) => void;
+  link: (ref: string) => void;
+}
+
+class Settings extends Component<Props> {
   render() {
     return (
       <Container style={{color: "white"}}>
@@ -29,15 +37,15 @@ class Settings extends Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state:IState) => {
   return {
     playerName: state.playerName
   }
 }
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch:Dispatch) => {
   return {
-    onNameChange: e => dispatch({type: "UPDATE_PLAYER_NAME", value: e.target.value})
+    onNameChange: (e:ChangeEvent<HTMLInputElement>) => dispatch({type: "UPDATE_PLAYER_NAME", value: e.target.value})
   }
 }
 

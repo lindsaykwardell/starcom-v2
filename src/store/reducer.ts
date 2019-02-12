@@ -1,19 +1,25 @@
-import firebase from "../config/firebase"
+import firebase from "../config/firebase";
+import { initialState, IState } from "./state";
 
-const initialState = {
-  playerName: localStorage.getItem("PlayerName") || "New Player",
-  gameName: localStorage.getItem("GameName") || "Lyre War",
-  gridSize: "3",
-  gameMode: "hotseat",
-  isHostingGame: false,
-  isGameRunning: false,
-  connectedToGame: null
-};
-
-const reducer = (state = initialState, action) => {
+const reducer = (
+  state: IState = initialState,
+  action: {
+    type: string;
+    value: string;
+    name: string;
+    gameID: string;
+    mode: string;
+    size: number;
+  }
+) => {
   switch (action.type) {
     case "UPDATE_PLAYER_NAME":
-      firebase.auth().currentUser.updateProfile({ displayName: action.value })
+      firebase
+        .auth()
+        .currentUser.updateProfile({
+          displayName: action.value,
+          photoURL: null
+        });
       localStorage.setItem("PlayerName", action.value);
       return {
         ...state,
@@ -24,38 +30,38 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         gameName: action.name
-      }
+      };
     case "SET_GAME_MODE":
       return {
         ...state,
         gameMode: action.mode
-      }
+      };
     case "HOST_GAME":
       return {
         ...state,
         isHostingGame: true,
         isGameRunning: true,
         connectedToGame: action.gameID
-      }
+      };
     case "JOIN_GAME":
       return {
         ...state,
         isHostingGame: false,
         isGameRunning: true,
         connectedToGame: action.gameID
-      }
+      };
     case "END_GAME":
       return {
         ...state,
         isHostingGame: false,
         isGameRunning: false,
         connectedToGame: null
-      }
+      };
     case "SET_GRID_SIZE":
       return {
         ...state,
         gridSize: action.size
-      }
+      };
     default:
       return state;
   }

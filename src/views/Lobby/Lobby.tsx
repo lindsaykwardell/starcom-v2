@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, ChangeEvent } from "react";
 import { connect } from "react-redux";
 import {
   Row,
@@ -10,14 +10,14 @@ import {
   Input
 } from "reactstrap";
 import firebase from "../../config/firebase";
-
+import {IState} from "../../store/state";
 import Menu from "../../components/Menu/Menu";
 
 import bg from "../../img/bg.jpg";
-
 import classes from "./lobby.module.css";
+import { Dispatch } from "redux";
 
-const mapStateToProps = state => {
+const mapStateToProps = (state:IState) => {
   return {
     gameName: state.gameName,
     gridSize: state.gridSize,
@@ -27,58 +27,98 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch:Dispatch) => {
   return {
-    setGameName: e => dispatch({ type: "SET_GAME_NAME", name: e.target.value }),
-    setGameMode: mode => dispatch({ type: "SET_GAME_MODE", mode }),
-    hostGame: id => dispatch({ type: "HOST_GAME", gameID: id }),
-    joinGame: id => dispatch({ type: "JOIN_GAME", gameID: id }),
-    setGridSize: e => dispatch({ type: "SET_GRID_SIZE", size: e.target.value })
+    setGameName: (e:ChangeEvent<HTMLInputElement>) => dispatch({ type: "SET_GAME_NAME", name: e.target.value }),
+    setGameMode: (mode:string) => dispatch({ type: "SET_GAME_MODE", mode }),
+    hostGame: (id:string) => dispatch({ type: "HOST_GAME", gameID: id }),
+    joinGame: (id:string) => dispatch({ type: "JOIN_GAME", gameID: id }),
+    setGridSize: (e:ChangeEvent<HTMLInputElement>) => dispatch({ type: "SET_GRID_SIZE", size: e.target.value })
   };
 };
+
+interface State {
+  availableGames: any[];
+  selectedGame: string;
+  menuOption: string;
+}
+
+interface Props {
+  gameName: string;
+  gridSize: number;
+  gameMode: string;
+  isHostingGame: boolean;
+  connectedToGame: string;
+  setGameName: (e: ChangeEvent<HTMLInputElement>) => void;
+  setGameMode: (mode: string) => void;
+  hostGame: (id:string) => void;
+  joinGame: (id:string) => void;
+  setGridSize: (e:ChangeEvent<HTMLInputElement>) => void;
+  link: (ref:string) => void;
+}
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(
-  class Lobby extends Component {
-    constructor() {
-      super();
+  class Lobby extends Component<Props, State> {
+    // constructor() {
+    //   super({});
 
-      this.state = {
-        availableGames: [],
-        selectedGame: "",
-        menuOption: "new"
-      };
+    //   this.state = {
+    //     availableGames: [],
+    //     selectedGame: "",
+    //     menuOption: "new"
+    //   };
 
-      this.listener = firebase
-        .firestore()
-        .collection("currentGames")
-        .where("playerCount", "==", 1)
-        .onSnapshot(docs => {
-          const availableGames = [];
-          docs.forEach(doc => {
-            const game = doc.data();
-            game.ID = doc.id;
-            availableGames.push(game);
-          });
-          this.setState({ availableGames });
+    //   this.listener = firebase
+    //     .firestore()
+    //     .collection("currentGames")
+    //     .where("playerCount", "==", 1)
+    //     .onSnapshot(docs => {
+    //       const availableGames:any = [];
+    //       docs.forEach(doc => {
+    //         const game = doc.data();
+    //         game.ID = doc.id;
+    //         availableGames.push(game);
+    //       });
+    //       this.setState({ availableGames });
+    //     });
+    // }
+
+    state:State = {
+      availableGames: [],
+      selectedGame: "",
+      menuOption: "new"
+    };
+
+    listener = firebase
+      .firestore()
+      .collection("currentGames")
+      .where("playerCount", "==", 1)
+      .onSnapshot(docs => {
+        const availableGames: any = [];
+        docs.forEach(doc => {
+          const game = doc.data();
+          game.ID = doc.id;
+          availableGames.push(game);
         });
-    }
+        this.setState({ availableGames });
+      });
 
     componentWillUnmount() {
       this.listener();
     }
 
-    setMenuOption = menuOption => {
+    setMenuOption = (menuOption:string) => {
       this.setState({ menuOption });
     };
 
-    setGameModeHandler = e => {
+    setGameModeHandler = (e:ChangeEvent<HTMLInputElement>) => {
       this.props.setGameMode(e.target.value);
     };
 
-    selectGameHandler = gameID => {
+    selectGameHandler = (gameID:string) => {
       this.props.setGameMode("online");
       console.log(gameID);
       this.setState({ selectedGame: gameID });

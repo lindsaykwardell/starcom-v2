@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, CSSProperties } from "react";
 
 import Router from "../../router/Router";
 import routes from "../../router/routes/routes";
@@ -18,14 +18,14 @@ export default class Frame extends Component {
   };
 
   render() {
-    const frame = {
+    const frame:CSSProperties = {
       position: "absolute",
       width: "100%",
       height: "100%",
       background: "#333",
-      opacity: this.state.activeTransition ? "0" : "1",
+      opacity: this.state.activeTransition ? 0 : 1,
       transition: "0.5s",
-      zIndex: "1"
+      zIndex: 1
     };
 
     return (

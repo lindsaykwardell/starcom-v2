@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, ChangeEvent } from "react";
 import {
   Container,
   Input,
@@ -11,18 +11,24 @@ import {
 import firebase from "../../config/firebase";
 import classes from "./Login.module.css";
 
-export default class Login extends Component {
-  state = {
+interface State {
+  emailAddress: string,
+  password: string,
+  error: {code: string, message: string}
+}
+
+export default class Login extends Component<{}, State> {
+  state:State = {
     emailAddress: "",
     password: "",
     error: null
   };
 
-  enterEmailHandler = e => {
+  enterEmailHandler = (e:ChangeEvent<HTMLInputElement>) => {
     this.setState({ emailAddress: e.target.value, error: null });
   };
 
-  enterPasswordHandler = e => {
+  enterPasswordHandler = (e:ChangeEvent<HTMLInputElement>) => {
     this.setState({ password: e.target.value, error: null });
   };
 
@@ -47,7 +53,8 @@ export default class Login extends Component {
         const user = firebase.auth().currentUser;
 
         user.updateProfile({
-          displayName: "Lord Knave"
+          displayName: "Ensign",
+          photoURL: null
         });
       })
       .catch(error => {
