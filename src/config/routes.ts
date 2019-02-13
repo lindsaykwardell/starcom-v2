@@ -1,7 +1,7 @@
-import SplashComponent from "../../views/Splash/Splash";
-import LoginComponent from "../../views/Login/Login";
-import LobbyComponent from "../../views/Lobby/Lobby";
-import SettingsComponent from "../../views/Settings/Settings";
+import SplashComponent from "../views/Splash/Splash";
+import LoginComponent from "../views/Login/Login";
+import LobbyComponent from "../views/Lobby/Lobby";
+import SettingsComponent from "../views/Settings/Settings";
 
 //import audioControl from "../../config/audioControl";
 

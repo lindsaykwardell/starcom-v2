@@ -1,7 +1,7 @@
 import React, { Component, CSSProperties } from "react";
 
-import Router from "../../router/Router";
-import routes from "../../router/routes/routes";
+import Router from "./Router";
+import routes from "../config/routes";
 
 export default class Frame extends Component {
   state = {

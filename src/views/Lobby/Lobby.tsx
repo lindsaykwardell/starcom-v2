@@ -1,26 +1,21 @@
 import React, { Component, ChangeEvent } from "react";
 import { connect } from "react-redux";
-import {
-  Row,
-  Col,
-  Container,
-  Button,
-  FormGroup,
-  Label,
-  Input
-} from "reactstrap";
-import firebase from "../../config/firebase";
 import { IState } from "../../store/state";
-import Menu from "../../components/Menu/Menu";
+import { Dispatch } from "redux";
+
+import { Row, Col, Container } from "reactstrap";
+import firebase from "../../config/firebase";
+
+import Nav from "./Nav/Nav";
+import StartGameButton from "./StartGameButton/StartGameButton";
+import Settings from "./Settings/Settings";
 
 import bg from "../../img/bg.jpg";
 import classes from "./lobby.module.css";
-import { Dispatch } from "redux";
 
 interface State {
   availableGames: any[];
   selectedGame: string;
-  menuOption: string;
 }
 
 interface Props {
@@ -40,8 +35,7 @@ interface Props {
 class Lobby extends Component<Props, State> {
   state: State = {
     availableGames: [],
-    selectedGame: "",
-    menuOption: "new"
+    selectedGame: ""
   };
 
   listener = firebase
@@ -62,10 +56,6 @@ class Lobby extends Component<Props, State> {
   componentWillUnmount() {
     this.listener();
   }
-
-  setMenuOption = (menuOption: string) => {
-    this.setState({ menuOption });
-  };
 
   setGameModeHandler = (e: ChangeEvent<HTMLInputElement>) => {
     this.props.setGameMode(e.target.value);
@@ -115,10 +105,6 @@ class Lobby extends Component<Props, State> {
     }
   };
 
-  onLogoutHandler = () => {
-    firebase.auth().signOut();
-  };
-
   render() {
     const availableGames = this.state.availableGames.map((game, index) => {
       const isSelected =
@@ -158,129 +144,42 @@ class Lobby extends Component<Props, State> {
             overflow: "hidden"
           }}
         >
-          <div
-            style={{
-              color: "white",
-              position: "absolute",
-              top: "15px",
-              right: "15px"
-            }}
-          >
-            {firebase.auth().currentUser.displayName}
-            <Button
-              className="ml-3"
-              color="light"
-              onClick={() => this.props.link("Settings")}
-            >
-              Settings
-            </Button>
-            <Button
-              className="ml-3"
-              color="warning"
-              onClick={() => this.props.link("MapMaker")}
-            >
-              Map Maker
-            </Button>
-            <Button
-              className="ml-3"
-              color="dark"
-              onClick={this.onLogoutHandler}
-            >
-              Log Out
-            </Button>
-          </div>
+          <Nav
+            link={this.props.link}
+            logout={() => firebase.auth().signOut()}
+          />
           <Container style={{ marginTop: "60px" }}>
             <Row>
-              <Col
-                className={
-                  this.state.menuOption === "new" ? "" : classes.inactive
-                }
+              <StartGameButton
+                color="primary"
+                className={classes.enterGame}
+                onClick={this.hostGameHandler}
               >
-                <Button
-                  color="primary"
-                  className={classes.enterGame}
-                  onClick={this.hostGameHandler}
-                >
-                  <h1>
-                    {this.props.gameMode === "hotseat"
-                      ? "New Game"
-                      : "Host Game"}
-                  </h1>
-                </Button>
-              </Col>
-              <Col
-                className={
-                  this.state.menuOption === "join" ? "" : classes.inactive
-                }
+                <h1>
+                  {this.props.gameMode === "hotseat" ? "New Game" : "Host Game"}
+                </h1>
+              </StartGameButton>
+              <StartGameButton
+                color="info"
+                className={classes.enterGame}
+                onClick={this.hostGameHandler}
               >
-                <Button
-                  color="info"
-                  className={classes.enterGame}
-                  onClick={this.joinGameHandler}
-                >
-                  <h1>Join Game</h1>
-                </Button>
-              </Col>
+                <h1>Join Game</h1>
+              </StartGameButton>
             </Row>
           </Container>
           <Container className="p-2">
             <Row>
-              <Col
-                className={
-                  this.state.menuOption === "new" ? "" : classes.inactive
-                }
-              >
-                <div className={classes.box}>
-                  <h5>Settings</h5>
-                  <hr />
-                  <FormGroup>
-                    <Label>Game Mode</Label>
-                    <Input
-                      type="select"
-                      name="select"
-                      id="exampleSelect"
-                      onChange={this.setGameModeHandler}
-                      value={this.props.gameMode}
-                    >
-                      <option value="hotseat">Hotseat</option>
-                      <option value="online">Online</option>
-                      {/*<option value="computer">Vs. AI</option>*/}
-                    </Input>
-                  </FormGroup>
-                  {this.props.gameMode === "online" ? (
-                    <FormGroup>
-                      <Label for="gameName">Game Name</Label>
-                      <Input
-                        id="gameName"
-                        type="text"
-                        value={this.props.gameName}
-                        onChange={this.props.setGameName}
-                      />
-                    </FormGroup>
-                  ) : (
-                    ""
-                  )}
-                  <FormGroup>
-                    <Label>Grid Size</Label>
-                    <Input
-                      type="select"
-                      name="select"
-                      id="exampleSelect"
-                      value={this.props.gridSize}
-                      onChange={this.props.setGridSize}
-                    >
-                      <option value="3">3 x 3</option>
-                      <option value="4">4 x 4</option>
-                      <option value="5">5 x 5</option>
-                    </Input>
-                  </FormGroup>
-                </div>
-              </Col>
-              <Col
-                className={
-                  this.state.menuOption === "join" ? "" : classes.inactive
-                }
-              >
+              <Settings
+                className={classes.box}
+                gameMode={this.props.gameMode}
+                setGameMode={this.setGameModeHandler}
+                gameName={this.props.gameName}
+                setGameName={this.props.setGameName}
+                gridSize={this.props.gridSize}
+                setGridSize={this.props.setGridSize}
+              />
+              <Col>
                 <div className={classes.box}>
                   <h5>Current Games:</h5>
                   <hr />
@@ -289,28 +188,6 @@ class Lobby extends Component<Props, State> {
               </Col>
             </Row>
           </Container>
-          <Menu>
-            <Row>
-              <Col>
-                <Button
-                  color="dark"
-                  style={{ width: "100%" }}
-                  onClick={() => this.setMenuOption("new")}
-                >
-                  New
-                </Button>
-              </Col>
-              <Col>
-                <Button
-                  color="dark"
-                  style={{ width: "100%" }}
-                  onClick={() => this.setMenuOption("join")}
-                >
-                  Join
-                </Button>
-              </Col>
-            </Row>
-          </Menu>
         </div>
       </div>
     );

@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import firebase from "../config/firebase";
 import audioControl from "../config/audioControl";
 import { Dispatch } from "redux";
-import { IRoute } from "./routes/routes";
+import { IRoute } from "../config/routes";
 
 interface Props {
   updateName: (name: string) => void;

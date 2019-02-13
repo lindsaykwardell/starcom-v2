@@ -40,7 +40,7 @@ export default function Splash() {
               textAlign: "center"
             }}
           >
-            Juralen
+            Star Commander
           </h1>
           <hr />
         </div>
