@@ -1,3 +1,5 @@
+import Game from "../../models/Game/Game";
+
 export default class Card {
   name: string;
   img: string;
@@ -12,12 +14,13 @@ export default class Card {
   hasMoved: boolean;
   rules: string;
   canTarget: boolean;
-  globalEffect: () => void;
+  globalEffect: (Game: Game) => void;
   oneTimeEffect: () => void;
 
   constructor({
     name,
     img,
+    controlledBy,
     domain,
     type,
     cost,
@@ -31,6 +34,7 @@ export default class Card {
   }: {
     name: string;
     img: string;
+    controlledBy: string;
     domain: string;
     type: string;
     cost: number;
@@ -39,7 +43,7 @@ export default class Card {
     movement: boolean;
     rules: string;
     canTarget: boolean;
-    globalEffect: () => void;
+    globalEffect: (Game: Game) => void;
     oneTimeEffect: () => void;
   }) {
     this.name = name;
